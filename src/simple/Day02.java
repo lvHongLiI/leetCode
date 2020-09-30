@@ -1,7 +1,9 @@
 package simple;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -518,6 +520,103 @@ public class Day02 {
             k++;
         }
         return k-1;
+    }
+
+
+    /**
+     * 520. 检测大写字母
+     * @param word
+     * @return
+     */
+    public boolean detectCapitalUse(String word) {
+        int big=0;
+        int small=0;
+        boolean first=false;
+        char[] chars = word.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i]>=65&&chars[i]<=90){
+                big++;
+                if (i==0){
+                    first=true;
+                }
+            }
+            else
+                small++;
+        }
+        if (big==word.length()||small==word.length())
+            return true;
+        return first&&big==1;
+    }
+
+
+    /**
+     * 541. 反转字符串 II
+     * @param s
+     * @param k
+     * @return
+     */
+    public String reverseStr(String s, int k) {
+       return null;
+    }
+
+
+    /**
+     * 448. 找到所有数组中消失的数字
+     * @param nums
+     * @return
+     */
+    public List<Integer> findDisappearedNumbers(int[] nums) {
+        List<Integer> list=new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            int index=Math.abs(nums[i])-1;
+            if (nums[index]>0)
+            nums[index]*=-1;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if(nums[i]>0)
+                list.add(i+1);
+        }
+        return list;
+    }
+
+    /**
+     * 392. 判断子序列
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isSubsequence(String s, String t) {
+        char[] min = s.toCharArray();
+        char[] max = t.toCharArray();
+        int maxIndex=0;
+        int minCount=0;
+        for (int i = 0; i < min.length&&maxIndex<max.length; i++) {
+            while (maxIndex<max.length){
+                if (min[i]==max[maxIndex++]){
+                    minCount++;
+                    break;
+                }
+            }
+        }
+        return minCount==min.length;
+    }
+
+    /**
+     * 492. 构造矩形
+     * @param area
+     * @return
+     */
+    public int[] constructRectangle(int area) {
+        int sqrt = (int) Math.sqrt(area);
+        int[] arr=new int[2]; //索引0 为长  索引1 为宽
+        for (int i = sqrt; i >0; i--) {
+            if (area%i==0){
+                arr[0]=area/i;//长
+                arr[1]=i;//宽
+                return arr;
+            }
+        }
+        return arr;
     }
 
 }
