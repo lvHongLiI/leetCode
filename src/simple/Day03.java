@@ -2,8 +2,10 @@ package simple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -150,6 +152,97 @@ public class Day03 {
         return Math.min(set.size(),candies.length/2);
     }
 
+    /**
+     * 628. 三个数的最大乘积
+     * @param nums
+     * @return
+     */
+    public int maximumProduct(int[] nums) {
+        //1.找出最大的三个数
+        Arrays.sort(nums);
+
+        int length = nums.length;
+        return Math.max(nums[length-1]*nums[0]*nums[1],nums[length-1]*nums[length-2]*nums[length-3]);
+    }
+
+    /**
+     * 637. 二叉树的层平均值
+     * @param root
+     * @return
+     */
+    public List<Double> averageOfLevels(TreeNode root) {
+        return null;
+    }
+
+    /**
+     * 645. 错误的集合
+     * @param nums
+     * @return
+     */
+    public int[] findErrorNums(int[] nums) {
+        int[] arr=new int[2];
+        for (int i = 0; i < nums.length; i++) {
+            int index=Math.abs(nums[i])-1;
+            if (nums[index]>0)
+                nums[index]*=-1;
+            else
+                arr[0]=index+1;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i]>0){
+                arr[1]=i+1;
+                break;
+            }
+        }
+        return arr;
+    }
+
+    /**
+     * 643. 子数组最大平均数 I
+     * @param nums
+     * @param k
+     * @return
+     */
+    public double findMaxAverage(int[] nums, int k) {
+        double sum=0;
+        for(int i=0;i<k;i++)
+            sum+=nums[i];
+        double res=sum;
+        for(int i=k;i<nums.length;i++){
+            sum+=nums[i]-nums[i-k];
+            res=Math.max(res,sum);
+        }
+        return res/k;
+    }
+
+
+    /**
+     * 653. 两数之和 IV - 输入 BST
+     * @param root
+     * @param k
+     * @return
+     */
+    public boolean findTarget(TreeNode root, int k) {
+        List<Integer> list=new LinkedList<>();
+        findTarget(list,root);
+        Set<Integer> set=new HashSet<>();
+        for (Integer integer : list) {
+            if (set.contains(integer)){
+                set.add(k-integer);
+                continue;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private void findTarget(List list,TreeNode root){
+        if (root==null)
+            return;
+        list.add(root.val);
+        findTarget(list,root.left);
+        findTarget(list,root.right);
+    }
 
     /**
      * 606. 根据二叉树创建字符串
@@ -163,25 +256,87 @@ public class Day03 {
     }
 
     private void tree2str(StringBuilder builder,TreeNode node){
-        if(node == null)
+        if(node == null){
             return;
+        }
         builder.append(node.val);
-        builder.append("(");
-        tree2str(builder,node.left);
-        builder.append(")");
-        builder.append("(");
-        tree2str(builder,node.right);
-        builder.append(")");
+        if (node.right!=null||node.left!=null){
+            builder.append("(");
+            tree2str(builder,node.left);
+            builder.append(")");
+        }
+        if (node.right!=null){
+            builder.append("(");
+            tree2str(builder,node.right);
+            builder.append(")");
+        }
+    }
+
+    /**
+     * 617. 合并二叉树
+     * @param t1
+     * @param t2
+     * @return
+     */
+    public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+        if (t1==null)
+            return t2;
+
+        if (t2==null)
+            return t1;
+        TreeNode node = new TreeNode(t1.val + t2.val);
+        node.left = mergeTrees(t1.left, t2.left);
+        node.right = mergeTrees(t1.right, t2.right);
+        return node;
+    }
+
+    /**
+     * 657. 机器人能否返回原点
+     * @param moves
+     * @return
+     */
+    public boolean judgeCircle(String moves) {
+        int r=0,l=0,d=0,u=0;
+        for (char c : moves.toCharArray()) {
+            switch (c){
+                case 'U':
+                    u++;
+                    break;
+                case 'D':
+                    d++;
+                    break;
+                case 'R':
+                    r++;
+                    break;
+                case 'L':
+                    l++;
+                    break;
+            }
+        }
+        return r==l&&u==d;
+    }
+
+    /**
+     * 669. 修剪二叉搜索树
+     * @param root
+     * @param low
+     * @param high
+     * @return
+     */
+    public TreeNode trimBST(TreeNode root, int low, int high) {
+
     }
 
     public static void main(String[] args) {
-        TreeNode node=new TreeNode(1);
-        TreeNode node1_1=new TreeNode(2);
-        TreeNode node1_2=new TreeNode(3);
-        TreeNode node1_1_2=new TreeNode(4);
-        node1_1.right=node1_1_2;
-        node.left=node1_1;
-        node.right=node1_2;
-        System.out.println(new Day03().tree2str(node));
+        TreeNode root=new TreeNode(1);
+        TreeNode root1=new TreeNode(2);
+        TreeNode root2=new TreeNode(3);
+        TreeNode root11=new TreeNode(4);
+        root1.right=root11;
+        root.left=root1;
+        root.right=root2;
+        String s = new Day03().tree2str(root);
+        System.out.println(s);
+
     }
 }
