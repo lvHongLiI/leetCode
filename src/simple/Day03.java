@@ -1,5 +1,7 @@
 package simple;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Day03 {
@@ -641,10 +643,65 @@ public class Day03 {
         return letters[0];
     }
 
+    /**
+     * 1207. 独一无二的出现次数
+     * @param arr
+     * @return
+     */
+    public boolean uniqueOccurrences(int[] arr) {
+        if (arr==null||arr.length==0)
+            return true;
+        Map<Integer,Integer> map=new HashMap<>();
+        for (int i : arr) {
+            Integer integer = map.get(i);
+            if (integer==null)
+                map.put(i,1);
+            else
+                map.put(i,integer+1);
+        }
+
+        Set<Integer> set=new HashSet<>();
+        set.addAll(map.values());
+        return map.values().size()==set.size();
+    }
+
+
+    /**
+     * 1290. 二进制链表转整数
+     * @param head
+     * @return
+     */
+    public int getDecimalValue(ListNode head) {
+       int num=0;
+       while (head!=null){
+           num=num*2+head.val;
+           head=head.next;
+       }
+       return num;
+    }
+
+    /**
+     * 1281. 整数的各位积和之差
+     * @param n
+     * @return
+     */
+    public int subtractProductAndSum(int n) {
+        int ji=1,he=0;
+        if (n<10)
+            return 0;
+        while (n>0){
+            int s=n%10;
+            he+=s;
+            ji=ji*s;
+           n/=10;
+        }
+        return ji-he;
+    }
 
 
     public static void main(String[] args) {
-        System.out.println(new Day03().nextGreatestLetter(new char[]{'c', 'f', 'j'},'a'));
+
+        System.out.println(new Day03().subtractProductAndSum(234));
     }
 
 
