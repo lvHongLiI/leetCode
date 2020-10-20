@@ -598,8 +598,53 @@ public class Day03 {
       return l==r;
     }
 
+    /**
+     * 728. 自除数
+     * @param left
+     * @param right
+     * @return
+     */
+    public List<Integer> selfDividingNumbers(int left, int right) {
+        List<Integer> list=new ArrayList<>();
+        for (int i = left; i <=right; i++) {
+                if (isSelfDividingNumbers(i))
+                    list.add(i);
+        }
+        return list;
+    }
+
+
+    private boolean isSelfDividingNumbers(int num){
+        int i=0;
+        int now=num;
+        while (num>0){
+            i=num%10;
+            if (i==0||now%i!=0){
+                return false;
+            }
+            num=num/10;
+        }
+        return true;
+    }
+
+    /**
+     * 744. 寻找比目标字母大的最小字母
+     * @param letters
+     * @param target
+     * @return
+     */
+    public char nextGreatestLetter(char[] letters, char target) {
+        for (int i = 0; i < letters.length; i++) {
+            if (target<letters[i])
+                return letters[i];
+        }
+        return letters[0];
+    }
+
+
+
     public static void main(String[] args) {
-        System.out.println(new Day03().pivotIndex(new int[]{}));
+        System.out.println(new Day03().nextGreatestLetter(new char[]{'c', 'f', 'j'},'a'));
     }
 
 
