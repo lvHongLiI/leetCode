@@ -317,6 +317,395 @@ public class Day03 {
     }
 
 
+    /**
+     * 669. 修剪二叉搜索树
+     * @param root
+     * @param low
+     * @param high
+     * @return
+     */
+    public TreeNode trimBST(TreeNode root, int low, int high) {
+        if (root==null)
+            return null;
+        if (root.val<low){//当前节点左范围都小 直接去右节点找
+            return trimBST(root.right,low,high);
+        }else if (root.val>high){//当前节点比右范围大直接左节点找
+            return trimBST(root.left,low,high);
+        }else if (root.val==low){
+            root.left=null;
+            root.right=trimBST(root.right,root.val+1,high);
+        }else if (root.val==high){
+            root.right=null;
+            root.left=trimBST(root.left,low,root.val-1);
+        }else {
+            root.right=trimBST(root.right,root.val+1,high);
+            root.left=trimBST(root.left,low,root.val-1);
+
+        }
+        return  root;
+    }
+
+    /**
+     * 605. 种花问题
+     * @param flowerbed
+     * @param n
+     * @return
+     */
+    public boolean canPlaceFlowers(int[] flowerbed, int n) {
+        for (int i = 0; i < flowerbed.length&&n>0; i++) {
+            if (flowerbed[i]==0){
+                if (left(flowerbed,i-1)&&right(flowerbed,i+1)){
+                    flowerbed[i]=1;
+                    n--;
+                }
+
+            }
+        }
+        return n==0;
+    }
+
+    private boolean left(int[] flowerbed, int index){
+        return index<0||flowerbed[index]==0;
+    }
+
+    private boolean right(int[] flowerbed, int index){
+        return index>=flowerbed.length||flowerbed[index]==0;
+    }
+
+    /**
+     *
+     * 682. 棒球比赛
+     * 1.整数（一轮的得分）：直接表示您在本轮中获得的积分数。
+     * 2. "+"（一轮的得分）：表示本轮获得的得分是前两轮有效 回合得分的总和。
+     * 3. "D"（一轮的得分）：表示本轮获得的得分是前一轮有效 回合得分的两倍。
+     * 4. "C"（一个操作，这不是一个回合的分数）：表示您获得的最后一个有效 回合的分数是无效的，应该被移除。
+     * @param ops
+     * @return
+     */
+    public int calPoints(String[] ops) {
+        List<Integer> arr=new ArrayList();
+        for (int i = 0; i < ops.length; i++) {
+            int size=arr.size();
+            if ("+".equals(ops[i])){
+                arr.add((size>0?arr.get(size-1):0)+(size>1?arr.get(size-2):0));
+            }else if ("D".equals(ops[i])){
+                arr.add((size>0?arr.get(size-1):0)*2);
+            }else if ("C".equals(ops[i])){
+                if (size>0)
+                    arr.remove(size-1);
+            }else {
+                arr.add(Integer.valueOf(ops[i]).intValue());
+            }
+        }
+        int sum=0;
+        for (Integer integer : arr) {
+            sum+=integer;
+        }
+        return sum;
+    }
+
+    /**
+     * 671. 二叉树中第二小的节点
+     * @param root
+     * @return
+     */
+    public int findSecondMinimumValue(TreeNode root) {
+        TreeSet<Integer> set=new TreeSet<>();
+        value(set,root);
+        if (set.size()<2)
+            return -1;
+        else {
+            set.pollFirst();
+            return set.pollFirst();
+        }
+
+    }
+
+    private void value(TreeSet<Integer> treeSet,TreeNode root){
+        if (root==null)
+            return;
+        treeSet.add(root.val);
+        value(treeSet,root.left);
+        value(treeSet,root.right);
+    }
+
+    /***
+     * 674. 最长连续递增序列
+     * @param nums
+     * @return
+     */
+    public int findLengthOfLCIS(int[] nums) {
+        int max=nums.length>0?1:0;
+        int now=1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i]>nums[i-1]){
+                now++;
+            }else {
+                now=1;
+            }
+            if (now>max)
+                max=now;
+        }
+        return max;
+    }
+
+    /**
+     * 690. 员工的重要性
+     * @param employees
+     * @param id
+     * @return
+     */
+    public int getImportance(List<Employee> employees, int id) {
+        /*笨方法*/
+        int sum=0;
+        if (employees!=null&&employees.size()>0){
+            for (Employee employee : employees) {
+                if ( employee.id==id){
+                    sum=employee.importance+getImportance(employee.subordinates,employees);
+                    return sum;
+                }
+            }
+        }
+        return sum;
+    }
+
+    private int getImportance(List<Integer> id, List<Employee> employees) {
+        int sum=0;
+        for (Integer integer : id) {
+            for (Employee employee : employees) {
+                if (integer.equals(employee.id)){
+                    sum+=employee.importance+getImportance(employee.subordinates,employees);
+                }
+            }
+        }
+        return sum;
+    }
+
+    /**
+     * 693. 交替位二进制数
+     * @param n
+     * @return
+     */
+    public boolean hasAlternatingBits(int n) {
+        int last=2;
+        do{
+            int i=n&1;
+            if (last==i)
+                return false;
+            else {
+                last=i;
+                n=n>>1;
+            }
+        } while (n>0);
+        return true;
+    }
+
+    /**
+     * 700. 二叉搜索树中的搜索
+     * @param root
+     * @param val
+     * @return
+     */
+    public TreeNode searchBST(TreeNode root, int val) {
+        if (root==null)
+            return null;
+        if (root.val==val)
+            return root;
+        else if (root.val<val)
+            return searchBST(root.right,val);
+        else
+            return searchBST(root.left,val);
+    }
+
+
+    /**
+     * 704. 二分查找
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int search(int[] nums, int target) {
+        int l=0;
+        int r=nums.length;
+        while (l<r){
+            int now=((l+r)/2);
+            if (nums[now]<target){
+                l=now+1;
+            }else if (nums[now]>target){
+                r=now;
+            }else {
+                return now;
+            }
+        }
+        return -1;
+    }
+
+
+    /**
+     * 709. 转换成小写字母
+     * @param str
+     * @return
+     */
+    public String toLowerCase(String str) {
+        char[] chars = str.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i]>64&&chars[i]<98){
+                chars[i]+=32;
+            }
+        }
+        return new String(chars);
+    }
+
+    /**
+     * 717. 1比特与2比特字符
+     * @param bits
+     * @return
+     */
+    public boolean isOneBitCharacter(int[] bits) {
+        int last=0;
+        for (int i = 0; i < bits.length; i++) {
+            if (bits[i]==1){
+                if (last==1)
+                    last=0;
+                else
+                    last=1;
+            }else {
+                if (i==bits.length-1&&last==0){
+                    return true;
+                }
+                if (last==1){
+                    last=0;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 724. 寻找数组的中心索引
+     * @param nums
+     * @return
+     */
+    public int pivotIndex(int[] nums) {
+        if (nums==null)
+            return -1;
+        for (int i = 0; i < nums.length; i++) {
+            if (pivotIndex(nums,i))
+                return i;
+        }
+        return -1;
+    }
+
+    public boolean pivotIndex(int[] nums,int index){
+        int l=0;
+        int r=0;
+        for (int i = 0; i < index; i++) {
+            l+=nums[i];
+        }
+        for (int i = index+1; i<nums.length; i++) {
+            r+=nums[i];
+        }
+        return l==r;
+    }
+
+    /**
+     * 728. 自除数
+     * @param left
+     * @param right
+     * @return
+     */
+    public List<Integer> selfDividingNumbers(int left, int right) {
+        List<Integer> list=new ArrayList<>();
+        for (int i = left; i <=right; i++) {
+            if (isSelfDividingNumbers(i))
+                list.add(i);
+        }
+        return list;
+    }
+
+
+    private boolean isSelfDividingNumbers(int num){
+        int i=0;
+        int now=num;
+        while (num>0){
+            i=num%10;
+            if (i==0||now%i!=0){
+                return false;
+            }
+            num=num/10;
+        }
+        return true;
+    }
+
+    /**
+     * 744. 寻找比目标字母大的最小字母
+     * @param letters
+     * @param target
+     * @return
+     */
+    public char nextGreatestLetter(char[] letters, char target) {
+        for (int i = 0; i < letters.length; i++) {
+            if (target<letters[i])
+                return letters[i];
+        }
+        return letters[0];
+    }
+
+    /**
+     * 1207. 独一无二的出现次数
+     * @param arr
+     * @return
+     */
+    public boolean uniqueOccurrences(int[] arr) {
+        if (arr==null||arr.length==0)
+            return true;
+        Map<Integer,Integer> map=new HashMap<>();
+        for (int i : arr) {
+            Integer integer = map.get(i);
+            if (integer==null)
+                map.put(i,1);
+            else
+                map.put(i,integer+1);
+        }
+
+        Set<Integer> set=new HashSet<>();
+        set.addAll(map.values());
+        return map.values().size()==set.size();
+    }
+
+
+    /**
+     * 1290. 二进制链表转整数
+     * @param head
+     * @return
+     */
+    public int getDecimalValue(ListNode head) {
+        int num=0;
+        while (head!=null){
+            num=num*2+head.val;
+            head=head.next;
+        }
+        return num;
+    }
+
+    /**
+     * 1281. 整数的各位积和之差
+     * @param n
+     * @return
+     */
+    public int subtractProductAndSum(int n) {
+        int ji=1,he=0;
+        if (n<10)
+            return 0;
+        while (n>0){
+            int s=n%10;
+            he+=s;
+            ji=ji*s;
+            n/=10;
+        }
+        return ji-he;
+    }
+
     public static void main(String[] args) {
         TreeNode root=new TreeNode(1);
         TreeNode root1=new TreeNode(2);
