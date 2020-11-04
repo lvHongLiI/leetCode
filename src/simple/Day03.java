@@ -316,16 +316,6 @@ public class Day03 {
         return r==l&&u==d;
     }
 
-    /**
-     * 669. 修剪二叉搜索树
-     * @param root
-     * @param low
-     * @param high
-     * @return
-     */
-    public TreeNode trimBST(TreeNode root, int low, int high) {
-
-    }
 
     public static void main(String[] args) {
         TreeNode root=new TreeNode(1);
