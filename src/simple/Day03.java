@@ -10,7 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
+import java.util.stream.Collectors;
+/**
+ * 每个类 30题
+ */
 public class Day03 {
 
     /**
@@ -596,7 +599,7 @@ public class Day03 {
         return -1;
     }
 
-    public boolean pivotIndex(int[] nums,int index){
+    private boolean pivotIndex(int[] nums,int index){
         int l=0;
         int r=0;
         for (int i = 0; i < index; i++) {
@@ -704,18 +707,5 @@ public class Day03 {
             n/=10;
         }
         return ji-he;
-    }
-
-    public static void main(String[] args) {
-        TreeNode root=new TreeNode(1);
-        TreeNode root1=new TreeNode(2);
-        TreeNode root2=new TreeNode(3);
-        TreeNode root11=new TreeNode(4);
-        root1.right=root11;
-        root.left=root1;
-        root.right=root2;
-        String s = new Day03().tree2str(root);
-        System.out.println(s);
-
     }
 }
