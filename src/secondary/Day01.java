@@ -1,11 +1,10 @@
 package secondary;
 
+import org.omg.CORBA.INTERNAL;
 import simple.ListNode;
+import simple.TreeNode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class Day01 {
@@ -46,7 +45,7 @@ public class Day01 {
         return addTwoNumbers(l1,l2,0);
     }
 
-    public ListNode addTwoNumbers(ListNode l1, ListNode l2,int on) {
+    private ListNode addTwoNumbers(ListNode l1, ListNode l2,int on) {
         if (l1==null&&l2==null){
             if (on!=0)
                 return new ListNode(on);
@@ -73,11 +72,42 @@ public class Day01 {
         return node;
     }
 
+    /**
+     * 189. 旋转数组
+     * @param nums
+     * @param k
+     */
+    public void rotate(int[] nums, int k) {
+        int[] clone = nums.clone();
+        for (int i = 0; i < nums.length; i++) {
+            nums[(i+k)%nums.length]=clone[i];
+        }
+    }
+
+
+    /**
+     * 199. 二叉树的右视图
+     * @param root
+     * @return
+     */
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> list=new ArrayList<>();
+        rightSideView(root,list);
+        return list;
+    }
+
+    private void rightSideView(TreeNode root,List<Integer> list) {
+            if (root==null)
+                return;
+            list.add(root.val);
+            if (root.right!=null)
+                rightSideView(root.right,list);
+            else
+                rightSideView(root.left,list);
+    }
+
+
 
     public static void main(String[] args) {
-        ListNode node1 = new ListNode(9, new ListNode(9, new ListNode(9)));
-        ListNode node2 = new ListNode(9);
-        ListNode node = new Day01().addTwoNumbers(node1, node2);
-        System.out.println(node);
     }
 }

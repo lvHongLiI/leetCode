@@ -325,18 +325,39 @@ public class Day05 {
         right = sumRootToLeaf(root.right, num*2+root.val);
         return left+right;
     }
+    /**
+     * 1025. 除数博弈
+     * @param N
+     * @return
+     */
+    public boolean divisorGame(int N) {
+        int num=0;
+        while (N>1){
+            N=N-1;
+            num++;
+        }
+        return num%2!=0;
+    }
 
-    public static void main(String[] args) {
-        TreeNode node = new TreeNode(1);
-        TreeNode nodel = new TreeNode(1);
-//            nodel.left = new TreeNode(0);
-//            nodel.right = new TreeNode(1);
-//        TreeNode noder = new TreeNode(1);
-//            noder.left= new TreeNode(0);
-//            noder.right= new TreeNode(1);
-        node.left=nodel;
-//        node.right=noder;
-        System.out.println(new Day05().sumRootToLeaf(node));
+    /**
+     * 1046. 最后一块石头的重量
+     * @param stones
+     * @return
+     */
+    public int lastStoneWeight(int[] stones) {
+        LinkedList<Integer> list=new LinkedList<>();
+        for (int stone : stones) {
+            list.add(stone);
+        }
+        while (list.size()>1){
+            Collections.sort(list);
+            int y=list.pollLast();
+            int x=list.pollLast();
+            int s=y-x;
+            if (s!=0)
+                list.add(s);
+        }
+        return list.size()==0?0:list.pollFirst();
     }
 
 }
