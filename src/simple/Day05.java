@@ -1,11 +1,17 @@
 package simple;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 每个类 30题
  */
-public class Day05 {
+public class Day05 implements Cloneable{
 
     /**
      * 896. 单调数列
@@ -360,4 +366,360 @@ public class Day05 {
         return list.size()==0?0:list.pollFirst();
     }
 
+
+    /**
+     * 1089. 复写零
+     * @param arr
+     */
+    public void duplicateZeros(int[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i]==0){
+                for (int j =arr.length-1;j>i;j--) {
+                    arr[j]=arr[j-1];
+                }
+                i++;
+            }
+        }
+    }
+
+    /**
+     * 1108. IP 地址无效化
+     * @param address
+     * @return
+     */
+    public String defangIPaddr(String address) {
+        StringBuilder builder = new StringBuilder(address);
+        for (int i = 0; i < builder.length(); i++) {
+            if (builder.charAt(i)=='.'){
+                builder.insert(i,'[');
+                builder.insert(i+2,']');
+                i+=2;
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
+     * 1047. 删除字符串中的所有相邻重复项
+     * @param S
+     * @return
+     */
+    public String removeDuplicates(String S) {
+       StringBuilder sb=new StringBuilder(S);
+        for (int i = 0; i < sb.length()-1;) {
+            if (sb.charAt(i)==sb.charAt(i+1)){
+                sb.deleteCharAt(i);
+                sb.deleteCharAt(i);
+                if (i>0)
+                    i--;
+            }else {
+                i++;
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 按序打印
+     */
+    static class Foo {
+
+        private Lock lock;
+        private Condition first;
+        private Condition second;
+        private Condition third;
+        private volatile int flag=1;
+        public Foo() {
+            lock=new ReentrantLock();
+            first=lock.newCondition();
+            second=lock.newCondition();
+            third=lock.newCondition();
+        }
+
+        public void first(Runnable printFirst) throws InterruptedException {
+            lock.lock();
+            if (flag!=1)
+                first.await();
+            // printFirst.run() outputs "first". Do not change or remove this line.
+            printFirst.run();
+            flag=2;
+            second.signal();
+            lock.unlock();
+        }
+
+        public void second(Runnable printSecond) throws InterruptedException {
+            lock.lock();
+            if (flag!=2)
+                second.await();
+            // printSecond.run() outputs "second". Do not change or remove this line.
+            printSecond.run();
+            flag=3;
+            third.signal();
+            lock.unlock();
+        }
+
+        public void third(Runnable printThird) throws InterruptedException {
+            lock.lock();
+            if (flag!=3)
+                third.await();
+            // printThird.run() outputs "third". Do not change or remove this line.
+            printThird.run();
+            flag=1;
+            first.signal();
+            lock.unlock();
+        }
+    }
+
+    /**
+     * 1304. 和为零的N个唯一整数
+     * @param n
+     * @return
+     */
+    public int[] sumZero(int n) {
+        int[] ints = new int[n];
+        boolean flag=n%2==1;
+        while (n>0){
+            if (n==1&&flag)
+                ints[n-1]=0;
+            else {
+                if (n%2==0){
+                    ints[n-1]=n/2;
+                }else {
+                    if (flag){
+                        ints[n-1]=-(n/2);
+                    }else {
+                        ints[n-1]=-((n+1)/2);
+                    }
+                }
+            }
+            n--;
+        }
+        return ints;
+    }
+
+    /**
+     * 1313. 解压缩编码列表
+     * @param nums
+     * @return
+     */
+    public int[] decompressRLElist(int[] nums) {
+        LinkedList<Integer> list=new LinkedList<>();
+        int size=0;
+        int num=0;
+        for (int i = 0; i < nums.length; i+=2) {
+            size=nums[i];
+            num=nums[i+1];
+            while (size-->0){
+                list.add(num);
+            }
+        }
+        int[] arr=new int[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            arr[i]=list.get(i);
+        }
+        return arr;
+    }
+
+
+    /**
+     *1323. 6 和 9 组成的最大数字
+     * @param num
+     * @return
+     */
+    public int maximum69Number (int num) {
+        StringBuilder sb=new StringBuilder();
+        sb.append(num);
+        int nu=0;
+        boolean flag=false;
+        while (sb.length()>0){
+            char c = sb.charAt(0);
+            if (!flag){
+                if (flag=c=='6'){
+                    nu=nu*10+9;
+                }else {
+                    nu=nu*10+(c-48);
+                }
+            }else {
+                nu=nu*10+(c-48);
+            }
+            sb.deleteCharAt(0);
+        }
+        return nu;
+
+    }
+
+
+    /**
+     * 1346. 检查整数及其两倍数是否存在
+     * @param arr
+     * @return
+     */
+    public boolean checkIfExist(int[] arr) {
+        HashSet<Integer> set=new HashSet<>();
+        for (int i : arr) {
+            if (set.contains(i*2)){
+               return true;
+            }else {
+               if (i%2==0&&set.contains(i/2)){
+                   return true;
+               }
+               set.add(Integer.valueOf(i));
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 1342. 将数字变成 0 的操作次数
+     * @param num
+     * @return
+     */
+    public int numberOfSteps (int num) {
+        int count=0;
+        while (num>0){
+            int n=num&1;
+            if (n==0){
+                num/=2;
+            }else {
+                num-=1;
+            }
+            count++;
+        }
+        return count;
+    }
+
+    /**
+     * 1365. 有多少小于当前数字的数字
+     * @param nums
+     * @return
+     */
+    public int[] smallerNumbersThanCurrent(int[] nums) {
+        int[] arr=new int[101];
+        for (int num : nums) {
+            arr[num]++;
+        }
+        int[] list=new int[nums.length];
+        for (int i = 0; i < list.length; i++) {
+            list[i]=get(nums[i],arr);
+        }
+        return list;
+    }
+    private int get(int tmp,int[] arr){
+        int sum=0;
+        for (int i = 0; i < tmp; i++) {
+            sum+=arr[i];
+        }
+        return sum;
+    }
+
+    /**
+     * 1370. 上升下降字符串
+     * @param s
+     * @return
+     */
+    public String sortString(String s) {
+        int[] chars=new int[26];
+        StringBuilder sb=new StringBuilder();
+        int sum=0;
+        for (char c : s.toCharArray()) {
+            chars[c-'a']++;
+            sum++;
+        }
+
+        while (sum>0){
+            int num=0;
+            while (sum>0&&num<chars.length){
+                if (chars[num]!=0){
+                    sb.append((char)(97+num));
+                    chars[num]--;
+                    sum--;
+                }
+                num++;
+            }
+            num--;
+            while (sum>0&&num>=0){
+                if (chars[num]!=0){
+                    sb.append((char)(97+num));
+                    chars[num]--;
+                    sum--;
+                }
+                num--;
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 1374. 生成每种字符都是奇数个的字符串
+     * @param n
+     * @return
+     */
+    public String generateTheString(int n) {
+        StringBuilder builder=new StringBuilder();
+        boolean flag=n%2==0;
+        while (n>0){
+            if (n==1&&flag){
+                builder.append('b');
+                n--;
+            }else {
+                builder.append('a');
+                n--;
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
+     * 1417. 重新格式化字符串
+     * @param s
+     * @return
+     */
+    public String reformat(String s) {
+            int np=0;//数字指针
+            int ep=0;//英文指针
+            StringBuilder sb=new StringBuilder();
+            while (s.length()!=sb.length()&&(np<s.length()||ep<s.length())){
+                while (np<s.length()&&!isNumber(s.charAt(np))){
+                    np++;
+                }
+                if (np<s.length()){
+                    if (sb.length()>0&&isNumber(sb.charAt(sb.length()-1))){
+                        sb.insert(0,s.charAt(np++));
+                    }else {
+                        sb.append(s.charAt(np++));
+                    }
+                }
+
+                while (ep<s.length()&&!isEnglish(s.charAt(ep))){
+                    ep++;
+                }
+                if (ep<s.length()){
+                    if (sb.length()>0&&isEnglish(sb.charAt(sb.length()-1))){
+                        if (isEnglish(sb.charAt(0))){
+                            break;
+                        }
+                        sb.insert(0,s.charAt(ep++));
+                    }else {
+                        sb.append(s.charAt(ep++));
+                    }
+                    continue;
+                }
+                break;
+            }
+            return s.length()!=sb.length()?"":sb.toString();
+    }
+    private boolean isNumber(char c){
+        return c>=48&&c<=57;
+    }
+
+    private boolean isEnglish(char c){
+        return c>=97&&c<=122;
+    }
+
+
+
+
+    public static void main(String[] args) {
+
+    }
 }

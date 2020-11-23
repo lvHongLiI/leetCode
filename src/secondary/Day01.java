@@ -5,6 +5,7 @@ import simple.ListNode;
 import simple.TreeNode;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 
 public class Day01 {
@@ -82,32 +83,5 @@ public class Day01 {
         for (int i = 0; i < nums.length; i++) {
             nums[(i+k)%nums.length]=clone[i];
         }
-    }
-
-
-    /**
-     * 199. 二叉树的右视图
-     * @param root
-     * @return
-     */
-    public List<Integer> rightSideView(TreeNode root) {
-        List<Integer> list=new ArrayList<>();
-        rightSideView(root,list);
-        return list;
-    }
-
-    private void rightSideView(TreeNode root,List<Integer> list) {
-            if (root==null)
-                return;
-            list.add(root.val);
-            if (root.right!=null)
-                rightSideView(root.right,list);
-            else
-                rightSideView(root.left,list);
-    }
-
-
-
-    public static void main(String[] args) {
     }
 }
