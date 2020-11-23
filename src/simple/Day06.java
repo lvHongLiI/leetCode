@@ -56,19 +56,19 @@ public class Day06 {
      * @return
      */
     public int maxPower(String s) {
-        int max=0;
-        int slow=0;
+        int max = 0;
+        int slow = 0;
         char[] chars = s.toCharArray();
         for (int i = 0; i < chars.length; i++) {
-            if (chars[slow]!=chars[i]){
-                max=Math.max(max,i-slow);
-                slow=i;
-            }else if (i==chars.length-1){
-                max=Math.max(max,chars.length-slow);
+            if (chars[slow] != chars[i]) {
+                max = Math.max(max, i - slow);
+                slow = i;
+            } else if (i == chars.length - 1) {
+                max = Math.max(max, chars.length - slow);
             }
         }
         return max;
-
+    }
     /**
      * 925. 长按键入
      * @param name
@@ -204,9 +204,6 @@ public class Day06 {
     }
 
 
-    public static void main(String[] args) {
-        System.out.println(new Day06().isPrefixOfWord("ellohello hellohellohello","ell"));
-    }
 
      /** 1160. 拼写单词
      * @param words
