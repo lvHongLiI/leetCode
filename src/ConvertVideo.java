@@ -32,11 +32,11 @@ public class ConvertVideo {
         try {
             String currPath = diretory.getAbsolutePath();
             //视频的地址
-            inputPath = "D:\\spring源码\\";
+            inputPath = "G:\\Redis3.0新特性、主从复制、集群视频教程\\视频教程";
             //视频转完格式存放地址
-            outputPath = "D:\\spring源码解析\\";
+            outputPath = "D:\\Redis3.0新特性、主从复制、集群视频教程\\";
             //转换视频的插件
-            ffmpegPath = "D:\\谷歌浏览器下载\\ffmpeg-20171225-be2da4c-win64-static\\bin\\";
+            ffmpegPath = "D:\\localSoftware\\chromeDownloads\\ffmpeg-20171225-be2da4c-win64-static\\bin\\";
             System.out.println(currPath);
         }
         catch (Exception e) {
@@ -47,7 +47,6 @@ public class ConvertVideo {
     public static boolean process() {
         int type = checkContentType();
         boolean status = false;
-        System.out.println("直接转成mp4格式");
         for (File file : new File(inputPath).listFiles()) {
             status = processMp4(file.getPath(),file.getName());// 直接转成mp4格式
         }
