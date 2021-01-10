@@ -7,7 +7,9 @@ import simple.TreeNode;
 import java.util.*;
 import java.util.stream.Stream;
 
-
+/**
+ * 每个类 30题
+ */
 public class Day01 {
 
     /**
@@ -83,5 +85,158 @@ public class Day01 {
         for (int i = 0; i < nums.length; i++) {
             nums[(i+k)%nums.length]=clone[i];
         }
+    }
+
+    /**
+     * 54. 螺旋矩阵
+     * @param matrix
+     * @return
+     */
+    public List<Integer> spiralOrder(int[][] matrix) {
+        if (matrix==null||matrix.length==0)
+            return new ArrayList<>();
+        LinkedList<Integer> list=new LinkedList<Integer>();
+        int max=matrix[0].length*matrix.length;
+        int hangLeft=0;
+        int hangRight=matrix[0].length-1;
+        int lieLeft=0;
+        int lieRight=matrix.length-1;
+        while (hangLeft-hangRight<=1||lieLeft-lieRight<=1){
+            for (int i = hangLeft; i <=hangRight; i++) {
+                if (list.size()==max)
+                    break;
+                list.add(matrix[lieLeft][i]);
+
+            }
+            lieLeft++;
+            for (int i = lieLeft; i <=lieRight; i++) {
+                if (list.size()==max)
+                    break;
+                list.add(matrix[i][hangRight]);
+            }
+            hangRight--;
+            for (int i = hangRight; i >=hangLeft; i--) {
+                if (list.size()==max)
+                    break;
+               list.add(matrix[lieRight][i]);
+            }
+            lieRight--;
+            for (int i = lieRight; i >=lieLeft; i--) {
+                if (list.size()==max)
+                    break;
+                list.add(matrix[i][hangLeft]);
+            }
+            hangLeft++;
+        }
+
+        return list;
+    }
+
+
+    /**
+     * 102. 二叉树的层序遍历
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        ArrayList<List<Integer>> list = new ArrayList<>();
+        levelOrder(root,0,list);
+        return list;
+    }
+
+    public void levelOrder(TreeNode root,int level,List<List<Integer>> lists) {
+        if (root==null)
+            return;
+        List<Integer> list=null;
+        if (lists.size()<=level){
+            list = new ArrayList<>();
+            list.add(root.val);
+            lists.add(list);
+        }else {
+            lists.get(level).add(root.val);
+        }
+        int nextLevel=level+1;
+        levelOrder(root.left,nextLevel,lists);
+        levelOrder(root.right,nextLevel,lists);
+    }
+
+
+    /**
+     * 34. 在排序数组中查找元素的第一个和最后一个位置
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int[] searchRange(int[] nums, int target) {
+        int[] count={-1,-1};
+        int left=0;
+        int right=nums.length;
+        while (left<right){
+            int mid= left+(right-left)/2;
+            if (nums[mid]>target){//错误版本
+                right=mid;
+            }else if (nums[mid]<target){//正确版本
+                left=mid+1;
+            }else {
+                count[0]=mid;
+                count[1]=mid;
+                int l=mid-1;
+                int r=mid+1;
+                while (l>-1){
+                    if (nums[l]!=target){
+                        break;
+                    }else {
+                        count[0]=l--;
+                    }
+                }
+                while (r<nums.length){
+                    if (nums[r]!=target){
+                        break;
+                    }else {
+                        count[1]=r++;
+                    }
+                }
+                break;
+            }
+        }
+        return count;
+    }
+
+
+    /**
+     * 151. 翻转字符串里的单词
+     * @param s
+     * @return
+     */
+    public String reverseWords(String s) {
+        StringBuilder sb=new StringBuilder();
+        int count=0;
+        char[] chars = s.toCharArray();
+        int kuai=chars.length-1;
+        while (kuai>=0){
+            if (chars[kuai]!=' '){
+                count++;
+            }else {
+                for (int i = kuai+1; i <=kuai+count; i++) {
+                    sb.append(chars[i]);
+                }
+                if (count>0){
+                    sb.append(' ');
+                    count=0;
+                }
+            }
+            kuai--;
+        }
+        if (count!=0)
+            for (int i = kuai+1; i <=kuai+count; i++) {
+                sb.append(chars[i]);
+            }
+        if (sb.length()>0&&sb.charAt(sb.length()-1)==' ')
+            sb.deleteCharAt(sb.length()-1);
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Arrays.toString(new Day01().searchRange(new int[]{2,2},2)));
     }
 }
