@@ -32,9 +32,9 @@ public class ConvertVideo {
         try {
             String currPath = diretory.getAbsolutePath();
             //视频的地址
-            inputPath = "D:\\spring源码\\";
+            inputPath = "G:\\MySQL大型分布式集群(更多教程 www.ittwz.com)";
             //视频转完格式存放地址
-            outputPath = "D:\\spring源码解析\\";
+            outputPath = "D:\\MySQL大型分布式集群(更多教程 www.ittwz.com)";
             //转换视频的插件
             ffmpegPath = "D:\\谷歌浏览器下载\\ffmpeg-20171225-be2da4c-win64-static\\bin\\";
             System.out.println(currPath);
@@ -49,10 +49,14 @@ public class ConvertVideo {
         boolean status = false;
         System.out.println("直接转成mp4格式");
         for (File file : new File(inputPath).listFiles()) {
-            status = processMp4(file.getPath(),file.getName());// 直接转成mp4格式
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                   processMp4(file.getPath(),file.getName());// 直接转成mp4格式
+                }
+            }).start();
         }
-
-        return status;
+        return true;
     }
 
 
