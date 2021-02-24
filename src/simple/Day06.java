@@ -616,16 +616,16 @@ public class Day06 {
      * @param arr
      * @return
      */
-    public int sumOddLengthSubarrays(int[] arr) {
-        int sum=0;
-        SegmentTree tree = new SegmentTree(arr);
-        for (int i = 1; i <=arr.length; i+=2) {
-            for (int j = 0; j <=arr.length-i; j++) {
-                sum+=tree.query(j,j+i-1);
-            }
-        }
-        return sum;
-    }
+//    public int sumOddLengthSubarrays(int[] arr) {
+//        int sum=0;
+//        SegmentTree tree = new SegmentTree(arr);
+//        for (int i = 1; i <=arr.length; i+=2) {
+//            for (int j = 0; j <=arr.length-i; j++) {
+//                sum+=tree.query(j,j+i-1);
+//            }
+//        }
+//        return sum;
+//    }
 
     /**
      * 1592. 重新排列单词间的空格

@@ -1,18 +1,20 @@
 package simple;
 
 
+
+
 /**
  * 线段树
  */
-public class SegmentTree {
+public class SegmentTree<E> {
 
     private int[] data;
 
     private int[] tree;
 
-    //private Merge merge;
+    private Merge merge;
     public SegmentTree(int[] arr) {
-        //this.merge=merge;
+        this.merge=merge;
         data=arr;
         tree=  new int[data.length*4];
         initialize(0,0,data.length-1);
@@ -29,7 +31,7 @@ public class SegmentTree {
         int rightChild = rightChild(treeIndex);
         initialize(leftChild,l,mid);
         initialize(rightChild,mid+1,r);
-        tree[treeIndex]=tree[leftChild]+tree[rightChild];
+        tree[treeIndex]=merge.merge(tree[leftChild],tree[rightChild]);
     }
 
     public int query(int l,int r){
@@ -52,7 +54,7 @@ public class SegmentTree {
         else {
             int dataR = query(rightChild, mid + 1, r, mid+1, queryR);
             int dataL = query(leftChild, l, mid, queryL, mid);
-            return dataL+dataR;
+            return merge.merge(dataL,dataR);
         }
     }
 
@@ -77,7 +79,7 @@ public class SegmentTree {
         }else {
             update(leftChild,l,mid,index,e);
         }
-        tree[treeIndex]=tree[leftChild]+tree[rightChild];
+        tree[treeIndex]=merge.merge(tree[leftChild],tree[rightChild]);
     }
 
     private int leftChild(int index){

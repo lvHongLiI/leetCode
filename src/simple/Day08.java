@@ -1,9 +1,6 @@
 package simple;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * 每个类 30题
@@ -583,13 +580,108 @@ public class Day08 {
         return new String(chars);
 
     }
-    public static void main(String[] args) {
-//        0 0
-//        1  2  3  4
-//        5  6  7  8
-//        9  10 11 12
-//        13 14 15 16
 
 
+    /**
+     * 剑指 Offer 59 - I. 滑动窗口的最大值
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int numLen = nums.length;
+        if(numLen == 0) return new int[0];
+        int[] ans = new int[numLen - k + 1]; //保存结果
+        int left = 0,right = k - 1;
+        int max = -1;
+        while(right < numLen){
+            if(max< left){
+                max = left;
+                for(int i = left;i <= right;i++){
+                    max = nums[max] < nums[i] ? i : max;
+                }
+            }
+            else{
+                max = nums[max] < nums[right] ? right : max;
+            }
+
+            ans[left] = nums[max];
+            left ++ ;
+            right ++;
+        }
+        return ans;
+    }
+
+//        if (nums.length==0)
+//            return new int[0];
+//        int[] arr=new int[nums.length-k+1];
+//        for (int i =k; i <=nums.length; i++) {
+//            int max=nums[i-1];
+//            for (int j = i-k; j <i; j++) {
+//                if (nums[j]>max)
+//                    max=nums[j];
+//            }
+//            arr[i-k]=max;
+//        }
+//        return arr;
+//        if (nums.length==0)
+//            return new int[0];
+//        Integer[] arr=new Integer[nums.length];
+//        for (int i = 0; i < nums.length; i++) {
+//            arr[i]=nums[i];
+//        }
+//        SegmentTree<Integer> tree = new SegmentTree(arr, new Merge<Integer>() {
+//            @Override
+//            public Integer merge(Integer e1, Integer e2) {
+//               if (e1.intValue()>e2.intValue())
+//                   return e1;
+//               return e2;
+//            }
+//        });
+//        int[] s=new int[nums.length-k+1];
+//        for (int i = k; i <=nums.length; i++) {
+//            s[i-k]=tree.query(i-k,i-1);
+//        }
+//        return s;
+
+
+    /**
+     * 面试题 01.01. 判定字符是否唯一
+     * @param astr
+     * @return
+     */
+    public boolean isUnique(String astr) {
+        int[] arr=new int[26];
+        for (char c : astr.toCharArray()) {
+            arr[c='a']++;
+        }
+        for (int i : arr) {
+            if (i!=0&&i>1)
+                return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * 面试题 01.02. 判定是否互为字符重排
+     * @param s1
+     * @param s2
+     * @return
+     */
+    public boolean CheckPermutation(String s1, String s2) {
+        if (s1.length()!=s2.length())
+            return false;
+        int[] arr1=new  int[26];
+        int[] arr2=new  int[26];
+        for (int i = 0; i < s1.length(); i++) {
+            arr1[s1.charAt(i)-'a']++;
+            arr1[s2.charAt(i)-'a']++;
+        }
+        for (int i = 0; i < arr1.length; i++) {
+            if (arr1[i]!=arr2[i])
+                return false;
+        }
+        return true;
     }
 }
