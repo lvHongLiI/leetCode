@@ -1,6 +1,6 @@
 package simple;
 
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * 每个类 30题

@@ -1,9 +1,7 @@
 package simple;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * 每个类 30题
@@ -589,7 +587,15 @@ public class Day08 {
 //        5  6  7  8
 //        9  10 11 12
 //        13 14 15 16
-
-
+        ScheduledThreadPoolExecutor executor=new ScheduledThreadPoolExecutor(1);
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(System.currentTimeMillis()+"当前线程是：" + Thread.currentThread().getName());
+            }
+        };
+        for (int i = 0; i < 1000; i++) {
+            executor.execute(runnable);
+        }
     }
 }
