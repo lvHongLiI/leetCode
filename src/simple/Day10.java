@@ -73,7 +73,7 @@ public class Day10 {
         return list;
     }
 
-
+ sssss
     public static void main(String[] args) {
         System.out.println(new Day10().summaryRanges(new int[]{0, 1, 2, 4, 5, 7}));
     }
