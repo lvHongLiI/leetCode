@@ -1,10 +1,12 @@
 package secondary;
 
-import org.omg.CORBA.INTERNAL;
+
 import simple.ListNode;
 import simple.TreeNode;
+import sun.misc.Unsafe;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 /**
@@ -236,7 +238,43 @@ public class Day01 {
         return sb.toString();
     }
 
-    public static void main(String[] args) {
-        System.out.println(Arrays.toString(new Day01().searchRange(new int[]{2,2},2)));
+
+    /**
+     * 287. 寻找重复数
+     * @param nums
+     * @return
+     */
+    public int findDuplicate(int[] nums) {
+        boolean[] arr=new boolean[nums.length+2];
+        for (int num : nums) {
+            if (!arr[num])
+                arr[num]=true;
+            else
+                return num;
+        }
+        return -1;
     }
+
+    /**
+     * 144. 二叉树的前序遍历
+     * @param root
+     * @return
+     */
+    public List<Integer> preorderTraversal(TreeNode root) {
+        LinkedList<Integer> list = new LinkedList<>();
+        preorderTraversal(root,list);
+        return list;
+    }
+
+
+    private void preorderTraversal(TreeNode root,List<Integer> list) {
+        if (root==null)
+            return;
+        preorderTraversal(root.left,list);
+        list.add(root.val);
+        preorderTraversal(root.right,list);
+    }
+
+
+
 }

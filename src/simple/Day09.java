@@ -607,20 +607,18 @@ public class Day09 {
      * @return
      */
     public int maxProfit(int[] prices) {
+        int min=Integer.MAX_VALUE;
         int max=0;
-        PriorityQueue<Integer> queue = new PriorityQueue();
-        for (int price : prices) {
-            queue.add(price);
-        }
-        for (int i = prices.length-1; i >0; i--) {
-            if (prices[i]==queue.peek()){
-                queue.poll();
-            }else {
-                max=Math.max(max,prices[i]-queue.peek());
+        for (int i = 0; i < prices.length; i++) {
+            if (min>prices[i]){
+             min=prices[i];
+            }else if (prices[i]-min>max){
+                max=prices[i]-min;
             }
         }
         return max;
     }
+
 
 
     /**
@@ -688,6 +686,6 @@ public class Day09 {
 
 
     public static void main(String[] args) throws ScriptException {
-        System.out.println(new Day09().titleToNumber("ZY"));
+        System.out.println(new Day09().maxProfit(new int[]{4,7,1,2}));
     }
 }
