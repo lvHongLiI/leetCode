@@ -163,6 +163,7 @@ public class Day09 {
     }
 
     /**
+     * 剑指 Offer II 027. 回文链表
      * 面试题 02.06. 回文链表
      * @param head
      * @return
@@ -182,6 +183,7 @@ public class Day09 {
 
 
     /**
+     * 剑指 Offer II 023. 两个链表的第一个重合节点
      * 160. 相交链表
      * 面试题 02.07. 链表相交
      * @param headA

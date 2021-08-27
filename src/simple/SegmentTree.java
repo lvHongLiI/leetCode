@@ -8,11 +8,15 @@ package simple;
  */
 public class SegmentTree<E> {
 
-    private int[] data;
+    public int[] data;
 
-    private int[] tree;
+    public int[] tree;
 
-    private Merge merge;
+    public Merge merge;
+
+    public SegmentTree() {
+    }
+
     public SegmentTree(int[] arr) {
         this.merge=merge;
         data=arr;

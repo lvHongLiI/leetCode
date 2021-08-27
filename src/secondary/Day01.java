@@ -7,6 +7,7 @@ import sun.misc.Unsafe;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 /**
@@ -267,6 +268,26 @@ public class Day01 {
     }
 
 
+    /**
+     * 300. 最长递增子序列
+     * @param nums
+     * @return
+     */
+    public int lengthOfLIS(int[] nums) {
+            int max=0;
+            int cur=1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i]>nums[i-1]){
+                cur++;
+                max=Math.max(max,cur);
+            }else {
+                cur=1;
+            }
+        }
+        return max;
+    }
+
+
     private void preorderTraversal(TreeNode root,List<Integer> list) {
         if (root==null)
             return;
@@ -276,5 +297,317 @@ public class Day01 {
     }
 
 
+    /**
+     * 面试题 04.05. 合法二叉搜索树
+     * 98. 验证二叉搜索树
+     * @param root
+     * @return
+     */
+    public boolean isValidBST(TreeNode root) {
+        List<Integer> list=new LinkedList();
+        validBST(root,list);
+        if (list.size()<2)
+            return true;
+        Iterator<Integer> iterator = list.iterator();
+         int last=iterator.next();
+         while (iterator.hasNext()){
+             Integer next = iterator.next();
+             if (last>=next)
+                 return false;
+             last=next;
+         }
+         return true;
+    }
+
+
+    private void validBST(TreeNode root,List<Integer> list){
+        if (root==null)
+            return;
+        validBST(root.left,list);
+        list.add(root.val);
+        validBST(root.right,list);
+    }
+
+
+    /**
+     * -2 -1 0 1 2 3 4 5 6 7
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> threeSum(int[] nums) {
+        //1.先排波序
+        Arrays.sort(nums);
+        List<List<Integer>> list=new LinkedList<>();
+        int len=0;
+        while (len<nums.length-2){
+            //1.初始化两个变量
+            int left=len+1;
+            int right=nums.length-1;
+            //如果后一个数和当前数已有则跳过
+            if (len>0&&nums[len]==nums[len-1]){
+                len++;
+                continue;
+            }
+
+            while (left<right){
+                int i = nums[len] + nums[right] + nums[left];
+                if (i==0){
+                    list.add(Arrays.asList(nums[len],nums[right] ,nums[left]));
+                    left++;
+                    right--;
+                    while (left<right&&nums[left-1]==nums[left]){
+                        left++;
+                    }
+                    while (left<right&&nums[right+1]==nums[right]){
+                        right--;
+                    }
+                }else if (i<0){
+                    left++;
+                }else {
+                    right--;
+                }
+            }
+            len++;
+        }
+        return list;
+    }
+
+
+    /**
+     * 剑指 Offer II 055. 二叉搜索树迭代器
+     * 173. 二叉搜索树迭代器
+     */
+    class BSTIterator {
+
+        private LinkedList<Integer> list;
+
+        public BSTIterator(TreeNode root) {
+            LinkedList<Integer> linkedList = new LinkedList<>();
+            test(root,linkedList);
+            list=linkedList;
+        }
+
+        private void test(TreeNode root,List<Integer> list){
+            if (root==null)
+                return;
+            test(root.left,list);
+            list.add(root.val);
+            test(root.right,list);
+        }
+
+        public int next() {
+            return list.pollFirst();
+        }
+
+        public boolean hasNext() {
+            return !list.isEmpty();
+        }
+    }
+
+
+    /**
+     * 230. 二叉搜索树中第K小的元素
+     * @param root
+     * @param k
+     * @return
+     */
+    public int kthSmallest(TreeNode root, int k) {
+       return test(root, k, new AtomicInteger(0));
+    }
+
+    private int test(TreeNode root, int k, AtomicInteger integer){
+        if (root.left!=null){
+            int num = test(root.left, k, integer);
+            if (num!=0)
+                return num;
+        }
+
+        if (integer.addAndGet(1)==k)
+            return root.val;
+
+        if (root.right!=null){
+            int num = test(root.right, k, integer);
+            if (num!=0)
+                return num;
+        }
+
+        return 0;
+    }
+
+
+    /**
+     * 1038. 把二叉搜索树转换为累加树
+     * 538. 把二叉搜索树转换为累加树
+     * 剑指 Offer II 054. 所有大于等于节点的值之和
+     * @param root
+     * @return
+     */
+    public TreeNode convertBST(TreeNode root) {
+        LinkedList<TreeNode> list=new LinkedList<>();
+        cent(root,list);
+        int sum=0;
+        TreeNode dummy=null;
+        if ((dummy=list.pollLast())!=null){
+            int val = dummy.val;
+            dummy.val+=sum;
+            sum+=val;
+        }
+        return root;
+    }
+
+
+    private void cent(TreeNode root,List<TreeNode> list){
+        if (root==null)
+            return;
+        cent(root.left,list);
+        list.add(root);
+        cent(root.right,list);
+    }
+
+
+
+    /**
+     * 450. 删除二叉搜索树中的节点
+     * @param root
+     * @param key
+     * @return
+     */
+    public TreeNode deleteNode(TreeNode root, int key) {
+        if (root==null)
+            return null;
+        if (root.val>key){
+            root.left=deleteNode(root.left,key);
+            return root;
+        }
+
+        if (root.val<key){
+             root.right=deleteNode(root.right,key);
+             return root;
+        }
+        TreeNode left = root.left;
+        TreeNode right = root.right;
+        if (left==null)
+            return right;
+        if (right==null)
+            return left;
+        TreeNode treeNode = minNode(right);
+        treeNode.right=deleteMinNode(right);
+        treeNode.left=left;
+        return treeNode;
+
+    }
+
+
+    public TreeNode minNode(TreeNode treeNode){
+        if (treeNode.left==null)
+            return treeNode;
+        return minNode(treeNode.left);
+    }
+
+    public TreeNode deleteMinNode(TreeNode treeNode){
+        if (treeNode.left==null)
+            return treeNode.right;
+        treeNode.left= deleteMinNode(treeNode.left);
+        return treeNode;
+    }
+
+
+    /**
+     * 114. 二叉树展开为链表
+     * @param root
+     */
+    public void flatten(TreeNode root) {
+        List<Integer> list=new ArrayList<>();
+        increasingBST(root,list);
+        Iterator<Integer> iterator = list.iterator();
+        if (list.size()<1){
+            return;
+        }
+        root.val=iterator.next();
+        root.left=null;
+        TreeNode dummy=root;
+        while (iterator.hasNext()){
+            dummy.right=new TreeNode(iterator.next());
+            dummy=dummy.right;
+        }
+    }
+    private void increasingBST(TreeNode root, List<Integer> list) {
+        if (root==null)
+            return;
+        list.add(root.val);
+        increasingBST(root.left,list);
+        increasingBST(root.right,list);
+    }
+
+
+
+    /**
+     * 109. 有序链表转换二叉搜索树
+     * @param head
+     * @return
+     */
+    public TreeNode sortedListToBST(ListNode head) {
+        List<Integer> list = new ArrayList<>();
+        while (head!=null){
+            list.add(head.val);
+            head=head.next;
+        }
+        return sortedArrayToBST(list);
+    }
+
+    public TreeNode sortedArrayToBST(List<Integer> nums) {
+        int cent = nums.size() / 2;
+        TreeNode root = new TreeNode(nums.get(cent));
+        root.left=sortedArrayToBST(0,cent-1,nums);
+        root.right=sortedArrayToBST(cent+1,nums.size()-1,nums);
+        return root;
+    }
+
+    private TreeNode sortedArrayToBST(int left,int right,List<Integer> nums){
+        if (left>right)
+            return null;
+        int cent = (right-left)/2+left;
+        TreeNode treeNode = new TreeNode(nums.get(cent));
+        treeNode.left=sortedArrayToBST(left,cent-1,nums);
+        treeNode.right=sortedArrayToBST(cent+1,right,nums);
+        return treeNode;
+    }
+
+
+    /**
+     * 面试题 04.06. 后继者
+     * 剑指 Offer II 053. 二叉搜索树中的中序后继
+     * @param root
+     * @param p
+     * @return
+     */
+    public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+        ArrayList<TreeNode> list = new ArrayList<>();
+        inorderSuccessor(root,list);
+        Iterator<TreeNode> iterator = list.iterator();
+        while (iterator.hasNext()){
+            if (iterator.next()==p){
+                if (iterator.hasNext()){
+                    return iterator.next();
+                }
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private void inorderSuccessor(TreeNode root,List<TreeNode> list){
+        if (root==null)
+            return;
+        inorderSuccessor(root.left,list);
+        list.add(root);
+        inorderSuccessor(root.right,list);
+    }
+
+
+
+    public static void main(String[] args) {
+      System.out.println(new Day01().addTwoNumbers(new ListNode(7,new ListNode(2,new ListNode(4,new ListNode(4)))),new  ListNode(5,new ListNode(6,new ListNode(4)))));
+    }
 
 }

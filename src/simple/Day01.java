@@ -166,32 +166,28 @@ public class Day01 {
      * @return
      */
     public int removeDuplicates(int[] nums) {
-        //思路一（自己的）
-//        int length=nums.length;
-//        for (int i = 0; i < length-1;) {
-//            if (nums[i]==nums[i+1]){
-//                for (int j = i; j < nums.length-1; j++) {
-//                    nums[j]=nums[j+1];
-//                }
-//                length--;
-//            }else {
-//                i++;
-//            }
-//        }
-//        return length;
+        int low=0;
+        int fast=0;
+        int sum=0;
+        while (fast<nums.length){
+            if (low==fast){
+                sum++;
 
-        //思路二（LeetCode）
-        if (nums.length == 0) return 0;
-        int i = 0;
-        for (int j = 1; j < nums.length; j++) {
-            if (nums[j] != nums[i]) {
-                i++;
-                nums[i] = nums[j];
+            }else {
+                if (nums[low]!=nums[fast]){
+                    nums[low+1]=nums[fast];
+                    sum++;
+                    low++;
+                }
             }
+            fast++;
         }
-        return i + 1;
+        return sum;
     }
 
+    public static void main(String[] args) {
+        System.out.println(new Day01().removeDuplicates(new int[]{0,0,1,1,1,2,2,3,3,4}));
+    }
     /**
      * 27. 移除元素
      *

@@ -1,21 +1,18 @@
 package simple;
 
-import java.util.Arrays;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
-public class Test {
-    private static boolean flag = false;
 
-    private Test() {
-
-        if (flag == false) {
-            flag = !flag;
-        } else {
-            throw new RuntimeException("单例模式被侵犯！");
-        }
+public class Test  extends SegmentTree{
+    public Test(int[] arr) {
+        super(arr);
     }
-    public static void main(String[] args) {
 
-        System.out.println(new Day02().guessNumber(10));
-        //System.out.println(new Day02().firstBadVersion(2126753390));
+
+    public static void main(String[] args) {
+        for (Field declaredField : Test.class.getFields()) {
+            System.out.println(declaredField.getName());
+        }
     }
 }

@@ -1,10 +1,22 @@
 package simple;
 
 
+import sun.misc.Unsafe;
+
 import javax.script.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
 import java.util.regex.Pattern;
 
 
@@ -187,14 +199,415 @@ public class Day11 {
     }
 
 
+    /**
+     * 225. 用队列实现栈
+     */
+    static class MyStack {
 
+        private LinkedList<Integer> one=null;
+        private LinkedList<Integer> tow=null;
 
-    public static void main(String[] param){
-        for (int i = 1; i < 1000; i++) {
-            System.out.println("值："+i+" "+new Day11().canWinNim(i));
+        /** Initialize your data structure here. */
+        public MyStack() {
+            one=new LinkedList();
+            tow=new LinkedList();
         }
+
+        /** Push element x onto stack. */
+        public void push(int x) {
+            LinkedList exportList=one.isEmpty()?tow:one;
+            LinkedList importList=one.isEmpty()?one:tow;
+            importList.add(x);
+            while (!exportList.isEmpty()){
+                importList.add(exportList.pop());
+            }
+
+        }
+
+        /** Removes the element on top of the stack and returns that element. */
+        public int pop() {
+            LinkedList<Integer> exportList=one.isEmpty()?tow:one;
+            return exportList.pop();
+        }
+
+        /** Get the top element. */
+        public int top() {
+            LinkedList<Integer> exportList=one.isEmpty()?tow:one;
+            return exportList.peek();
+        }
+
+        /** Returns whether the stack is empty. */
+        public boolean empty() {
+          return   one.isEmpty()&&tow.isEmpty();
+        }
+    }
+
+    /**
+     * 338. 比特位计数
+     * @param n
+     * @return
+     */
+    public int[] countBits(int n) {
+        int[] ints = new int[n+1];
+        for (int i = 1; i < n; i++) {
+            ints[i]=hammingWeight(i);
+        }
+        return ints;
+    }
+
+    private int hammingWeight(int n) {
+        int count = 0;
+        int i = 0;
+        while (i++ < 32) {
+            count += n & 1;
+            n >>= 1;
+        }
+        return count;
+    }
+
+    /**
+     * 1720. 解码异或后的数组
+     * @param encoded
+     * @param first
+     * @return
+     */
+    public int[] decode(int[] encoded, int first) {
+        int[] ints = new int[encoded.length];
+        ints[0]=first;
+        ints[1]=encoded[0]^first;
+        for (int i = 1; i < encoded.length; i++) {
+            ints[i+1]=ints[i]^encoded[i];
+        }
+        return ints;
+    }
+    public static String cutDecimalZero(String str){
+            if (str.indexOf(".")!=-1){
+                StringBuilder sb=new StringBuilder(str);
+                while (sb.charAt(sb.length()-1)=='0'){
+                    sb.deleteCharAt(sb.length()-1);
+                }
+                if (sb.charAt(sb.length()-1)=='.'){
+                    sb.deleteCharAt(sb.length()-1);
+                }
+                return sb.toString();
+            }
+        return str;
+    }
+
+
+    /**
+     * 1221. 分割平衡字符串
+     * @param s
+     * @return
+     */
+    public int balancedStringSplit(String s) {
+        int lNum=0;
+        int rNum=0;
+        int sum=0;
+        char[] chars = s.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            switch (chars[i]){
+                case 'L':
+                    lNum++;
+                    break;
+                case 'R':
+                    rNum++;
+                    break;
+            }
+            if (lNum==rNum&&lNum!=0){
+                sum++;
+                lNum=rNum=0;
+            }
+        }
+        if (lNum==rNum&&lNum!=0){
+            sum++;
+            lNum=rNum=0;
+        }
+        return sum;
+    }
+
+
+    /**
+     * 1844. 将所有数字用字符替换
+     * @param s
+     * @return
+     */
+    public String replaceDigits(String s) {
+        char[] chars = s.toCharArray();
+        for (int i = 0; i < s.length()-1; i+=2) {
+            chars[i+1]=shift(chars[i],chars[i+1]);
+        }
+        return new String(chars);
+    }
+    private char  shift(char chars,char x){
+        return (char) (chars+x-48);
+    }
+
+
+    /**
+     * 1796. 字符串中第二大的数字
+     * @param s
+     * @return
+     */
+    public int secondHighest(String s) {
+        PriorityQueue<Character> queue=new PriorityQueue();
+        //1.拿到所有数字
+        for (char c : s.toCharArray()) {
+            if (Character.isDigit(c)){
+                queue.remove(c);
+                if (queue.size()==2){
+                   if (queue.peek().compareTo(c)<0){
+                       queue.poll();
+                       queue.add(c);
+                   }
+                }else {
+                    queue.remove(c);
+                    queue.add(c);
+                }
+            }
+        }
+        //2.拿到第二大数字
+        if (queue.size()<2)
+            return -1;
+        return queue.poll()-'0';
+    }
+
+
+    public int[] sortByBits(int[] arr) {
+        Integer[] list=new Integer[arr.length];
+        for (int i = 0; i < list.length; i++) {
+            list[i]=arr[i];
+        }
+        Arrays.sort(list, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                int one1 = getOne(o1);
+                int one2 = getOne(o2);
+                if (one1==one2)
+                    return o1-o2;
+                return one1-one2;
+            }
+        });
+
+        for (int i = 0; i < list.length; i++) {
+            arr[i]=list[i];
+        }
+        return arr;
+    }
+
+    private int getOne(int i){
+        int count=0;
+        String s = Integer.toBinaryString(i);
+        for (char c : s.toCharArray()) {
+            if (c=='1')
+                count++;
+        }
+        return count;
+    }
+
+
+    /**
+     * 561. 数组拆分 I
+     * @param nums
+     * @return
+     */
+    public int arrayPairSum(int[] nums) {
+        Arrays.sort(nums);
+        int num=0;
+        for (int i = 0; i < nums.length; i+=2) {
+            num+=nums[i];
+        }
+        return num;
+    }
+
+    /**
+     * 剑指 Offer 68 - I. 二叉搜索树的最近公共祖先
+     * 235. 二叉搜索树的最近公共祖先
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root==null){
+            return null;
+        }
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if (left==null){
+            left=root.val==p.val?root:left;
+            left=root.val==q.val?root:left;
+        }
+        if (right==null){
+            right=root.val==p.val?root:right;
+            right=root.val==q.val?root:right;
+        }
+        if (right!=null&&left!=null){
+            return root;
+        }
+
+        return right!=null?right:left;
+    }
+
+
+    /**
+     *501. 二叉搜索树中的众数
+     * @param root
+     * @return
+     */
+    public int[] findMode(TreeNode root) {
+        List<Integer> list=new LinkedList<>();
+        findMode(root,list);
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (Integer integer : list) {
+            Integer num = map.get(integer);
+            if (num==null){
+                map.put(integer,1);
+            }else {
+                map.put(integer,num+1);
+            }
+        }
+        int max=0;
+        int num=0;
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            int value = entry.getValue().intValue();
+            if (max<value){
+                num=0;
+                max=value;
+            }else if (max==value)
+                num++;
+        }
+        int[] ints = new int[num];
+        int i=0;
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            int value = entry.getValue().intValue();
+            if (max==value){
+                ints[i++]=entry.getKey();
+            }
+        }
+        return ints;
+    }
+
+    private void findMode(TreeNode root,List<Integer> list){
+        if (root==null)
+            return;
+        findMode(root.left,list);
+        list.add(root.val);
+        findMode(root.right,list);
+    }
+
+
+    /**
+     * 剑指 Offer II 052. 展平二叉搜索树
+     * @param root
+     * @return
+     */
+    public TreeNode increasingBST(TreeNode root) {
+        List<Integer> list=new ArrayList<>();
+        increasingBST(root,list);
+
+        Iterator<Integer> iterator = list.iterator();
+        TreeNode node=new TreeNode(iterator.next());
+        TreeNode dummy=node;
+        while (iterator.hasNext()){
+            node.right=new TreeNode(iterator.next());
+            node=node.right;
+        }
+        return dummy;
+    }
+    private void increasingBST(TreeNode root, List<Integer> list) {
+        if (root==null)
+            return;
+        increasingBST(root.left,list);
+        list.add(root.val);
+        increasingBST(root.right,list);
+    }
+
+
+    /**
+     * 563. 二叉树的坡度
+     * @param root
+     * @return
+     */
+    public int findTilt(TreeNode root) {
+        AtomicInteger list = new AtomicInteger(0);
+        findTilt(root,list);
+        int sum=0;
+
+        return list.get();
+    }
+
+    public int  findTilt(TreeNode root,AtomicInteger list){
+        if (root==null){
+            return 0;
+        }
+        int left = findTilt(root.left,list);
+        int right = findTilt(root.right,list);
+        list.addAndGet(Math.abs(left-right));
+        return left+right+root.val;
+    }
+
+
+    /**
+     * 面试题 04.02. 最小高度树v
+     * @param nums
+     * @return
+     */
+    public TreeNode sortedArrayToBST(int[] nums) {
+        int cent = nums.length / 2;
+        TreeNode root = new TreeNode(nums[cent]);
+        root.left=sortedArrayToBST(0,cent-1,nums);
+        root.right=sortedArrayToBST(cent+1,nums.length-1,nums);
+        return root;
+    }
+
+    private TreeNode sortedArrayToBST(int left,int right,int[] nums){
+        if (left>right)
+            return null;
+        int cent = (right-left)/2+left;
+        TreeNode treeNode = new TreeNode(nums[cent]);
+        treeNode.left=sortedArrayToBST(left,cent-1,nums);
+        treeNode.right=sortedArrayToBST(cent+1,right,nums);
+        return treeNode;
+    }
+
+
+    /**
+     * 剑指 Offer II 056. 二叉搜索树中两个节点之和
+     * @param root
+     * @param k
+     * @return
+     */
+    public boolean findTarget(TreeNode root, int k) {
+       return findTarget(root,k,new HashSet<Integer>());
+
+    }
+
+    public boolean findTarget(TreeNode root, int k,Set<Integer> set) {
+        if (root==null)
+            return false;
+        boolean left = findTarget(root.left, k, set);
+        boolean rigth = findTarget(root.right, k, set);
+        boolean contains = set.contains(k - root.val);
+        set.add(root.val);
+        return contains||left||rigth;
+    }
+
+
+    /**
+     * 面试题 02.03. 删除中间节点
+     * @param node
+     */
+    public void deleteNode(ListNode node) {
+        node.val=node.next.val;
+        node.next=node.next.next;
     }
 
 
 
+    public static void main(String[] args) {
+        ListNode node = new ListNode(4, new ListNode(5, new ListNode(1, new ListNode(9))));
+        new Day11().deleteNode(node);
+        System.out.println(node);
+    }
 }
