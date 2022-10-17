@@ -1,14 +1,10 @@
 package simple;
 
-
 import sun.misc.Unsafe;
 
 import javax.script.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -604,10 +600,114 @@ public class Day11 {
     }
 
 
+    class KthLargest {
 
-    public static void main(String[] args) {
-        ListNode node = new ListNode(4, new ListNode(5, new ListNode(1, new ListNode(9))));
-        new Day11().deleteNode(node);
-        System.out.println(node);
+        private PriorityQueue<Integer> maxList=new PriorityQueue<>();
+
+        private int max;
+
+        public KthLargest(int k, int[] nums) {
+            max=k;
+            for (int num : nums) {
+                maxList.add(num);
+                if (maxList.size()>k){
+                    maxList.poll();
+                }
+            }
+        }
+
+
+        /**
+         * 剑指 Offer II 059. 数据流的第 K 大数值
+         * @param val
+         * @return
+         */
+        public int add(int val) {
+            maxList.add(val);
+            if (maxList.size()>max)
+                maxList.poll();
+            return maxList.peek();
+        }
+
+
+        /**
+         * 449. 序列化和反序列化二叉搜索树
+         */
+//        public class Codec {
+//
+//            // Encodes a tree to a single string.
+//            public String serialize(TreeNode root) {
+//
+//                Queue<TreeNode> queue=new LinkedList();
+//                queue.add(root);
+//                while (queue.size()!=0){
+//                    TreeNode o = queue.peek();
+//                    if (o!=null){
+//                        queue.add(o.left);
+//                        queue.add(o.right);
+//                    }
+//
+//                }
+//            }
+//
+//            private void serialize(TreeNode root,StringBuilder sb){
+//
+//            }
+//
+//            // Decodes your encoded data to tree.
+//            public TreeNode deserialize(String data) {
+//                String[] split = data.split(",");
+//                return treeNode(split,0);
+//            }
+//
+//            private TreeNode treeNode(String[] arr,int index){
+//                TreeNode node = new TreeNode(Integer.valueOf(arr[index]));
+//                int left =index*2+1;
+//                int right=index*2+2;
+//                if (left<arr.length){
+//                    node.left=treeNode(arr,left);
+//                }
+//                if (right<arr.length){
+//                    node.right=treeNode(arr,right);
+//                }
+//                return node;
+//            }
+//        }
+    }
+
+
+
+    public static void main(String[] args) throws UnsupportedEncodingException {
+//        KthLargest kl= new Day11().new KthLargest(3,new int[]{4, 5, 8, 2});
+//        System.out.println(kl.add(3));
+//        System.out.println(kl.add(5));
+//        System.out.println(kl.add(10));
+//        System.out.println(kl.add(9));
+//        System.out.println(kl.add(4));
+
+//        KthLargest kl= new Day11().new KthLargest(1,new int[]{});
+//        System.out.println(kl.add(-3));
+//        System.out.println(kl.add(-2));
+//        System.out.println(kl.add(-4));
+//        System.out.println(kl.add(0));
+//        System.out.println(kl.add(4));
+
+//        KthLargest kl= new Day11().new KthLargest(2,new int[]{0});
+//        System.out.println(kl.add(-1));
+//        System.out.println(kl.add(1));
+//        System.out.println(kl.add(-2));
+//        System.out.println(kl.add(-4));
+//        System.out.println(kl.add(3));
+
+//        KthLargest kl= new Day11().new KthLargest(3,new int[]{5,-1});
+//        System.out.println(kl.add(2));
+//        System.out.println(kl.add(1));
+//        System.out.println(kl.add(-1));
+//        System.out.println(kl.add(3));
+//        System.out.println(kl.add(4));
+       // System.out.println(new String(Base64.getEncoder().encode("rKYUwJ2RUvc6I2z6NwE8VCent2v0B72Bt4TScdV+g46xnVmVBp5xkQ=="),"UTF-8"));
+        System.out.println(BigDecimal.valueOf(Runtime.getRuntime().freeMemory()).divide(BigDecimal.valueOf(1024*1024))+"mb");
+        String str="测试数据：%s";
+        System.out.println(String.format(str, "dd"));
     }
 }

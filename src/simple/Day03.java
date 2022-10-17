@@ -543,6 +543,10 @@ public class Day03 {
         return -1;
     }
 
+    public static void main(String[] args) {
+        System.out.println(new Day03().search(new int[]{1, 2,3}, 2));
+    }
+
 
     /**
      * 709. 转换成小写字母

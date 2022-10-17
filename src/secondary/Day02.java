@@ -1,9 +1,13 @@
 package secondary;
 
 import simple.ListNode;
+import simple.Node;
 import simple.TreeNode;
 
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
 /**
  * Created with IntelliJ IDEA.
@@ -476,10 +480,179 @@ public class Day02 {
         return result;
     }
 
+    /**
+     * 103. 二叉树的锯齿形层序遍历
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> list = new LinkedList<>();
+        zigzagLevelOrder(root,0,list);
+        return list;
+    }
+
+    private void zigzagLevelOrder(TreeNode root,int level,List<List<Integer>> list){
+        if (root==null){
+            return;
+        }
+        if (list.size()<level+1){
+            list.add(new ArrayList<>());
+        }
+        List<Integer> list1 = list.get(level);
+        if (list1==null){
+            list1=new LinkedList<>();
+            list.set(level,list1);
+        }
+        if (level%2==0){
+            list1.add(root.val);
+        }else {
+            list1.add(0,root.val);
+        }
+        zigzagLevelOrder(root.left,level+1,list);
+        zigzagLevelOrder(root.right,level+1,list);
+
+    }
+
+
+    /**
+     * 129. 求根节点到叶节点数字之和
+     * @param root
+     * @return
+     */
+    public int sumNumbers(TreeNode root) {
+        return sumNumbers(root,0);
+    }
+
+    private int sumNumbers(TreeNode root,int lastNumber){
+        if (root.left==null&&root.right==null){
+            return lastNumber*10+root.val;
+        }
+        int left=0;
+        int right=0;
+        if (root.left!=null){
+            left=sumNumbers(root.left,lastNumber*10+root.val);
+        }
+        if (root.right!=null){
+            right=sumNumbers(root.right,lastNumber*10+root.val);
+        }
+        return left+right;
+    }
+
+
+    /**
+     * 199. 二叉树的右视图
+     * @param root
+     * @return
+     */
+    public List<Integer> rightSideView(TreeNode root) {
+        ArrayList<Integer> list = new ArrayList<>();
+        rightSideView(root,0,list);
+        return list;
+    }
+
+    private void rightSideView(TreeNode root,int level,List<Integer> list){
+        if (root==null){
+            return;
+        }
+        if (list.size()==level){
+            list.add(root.val);
+        }
+        list.set(level,root.val);
+        rightSideView(root.left,level+1,list);
+        rightSideView(root.right,level+1,list);
+    }
+
+
+    /**
+     * 222. 完全二叉树的节点个数
+     * @param root
+     * @return
+     */
+    public int countNodes(TreeNode root) {
+        if (root==null)
+            return 0;
+        int left = countNodes(root.left);
+        int right = countNodes(root.right);
+        return left+right+1;
+    }
+
+
+    /**
+     * 3. 无重复字符的最长子串
+     * @param s
+     * @return
+     */
+    public int lengthOfLongestSubstring(String s) {
+        //1.最大长度
+        int maxLen=0;
+        HashMap<Character,Integer> map=new HashMap<>();
+        char[] chars = s.toCharArray();
+        int fastIndex=0;
+        for (int i = 0; i < chars.length; i++) {
+            Integer charIndex = map.remove(chars[i]);
+            if (charIndex!=null&&charIndex>=fastIndex){
+                int len = i - fastIndex;
+                maxLen=maxLen<len?len:maxLen;
+                fastIndex=charIndex+1;
+            }
+            map.put(chars[i],i);
+        }
+        int len = chars.length - fastIndex;
+        maxLen=maxLen<len?len:maxLen;
+        return maxLen;
+    }
+
+
+    /**
+     *74. 搜索二维矩阵
+     * @param matrix
+     * @param target
+     * @return
+     */
+    public boolean searchMatrix(int[][] matrix, int target) {
+        //转换为一维数组
+        int[] ints = convert(matrix);
+        if (ints==null)
+            return false;
+        //用二分法
+        return search(ints,target)!=-1;
+    }
+
+    public int search(int[] nums, int target) {
+        int l=0;
+        int r=nums.length;
+        while (l<r){
+            int now=((l+r)/2);
+            if (nums[now]<target){
+                l=now+1;
+            }else if (nums[now]>target){
+                r=now;
+            }else {
+                return now;
+            }
+        }
+        return -1;
+    }
+
+    private int[] convert(int[][] matrix){
+        if (matrix==null||matrix.length==0){
+            return null;
+        }
+        int[] arr= new int[matrix.length*matrix[0].length];
+        int index=0;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                arr[index++]=matrix[i][j];
+            }
+        }
+        return arr;
+    }
+
 
     public static void main(String[] args) {
-        System.out.println(new Day02().swapNodes(new ListNode(1,new ListNode(2,new ListNode(3,new ListNode(4,new ListNode(5))))),2));
-        System.out.println();
+        System.out.println(new Day02().searchMatrix(new int[][]{{1, 3, 5, 7}, {10, 11, 16, 20}, {23, 30, 34, 60}}, 4));
+
+       // System.out.println(new Day02().searchMatrix(new int[][]{{1,2,3}}, 3));
     }
 
 }
