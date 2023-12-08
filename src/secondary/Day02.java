@@ -649,10 +649,139 @@ public class Day02 {
     }
 
 
-    public static void main(String[] args) {
-        System.out.println(new Day02().searchMatrix(new int[][]{{1, 3, 5, 7}, {10, 11, 16, 20}, {23, 30, 34, 60}}, 4));
+    /**
+     * 162. 寻找峰值
+     * @param nums
+     * @return
+     */
+    public int findPeakElement(int[] nums) {
+        //1. true 上坡 。false下坡
+        int left=0;
+        int right=nums.length-1;
 
-       // System.out.println(new Day02().searchMatrix(new int[][]{{1,2,3}}, 3));
+        while (left<right){
+            int zhong = getIndex(left, right);
+            boolean fen = fen(nums, zhong);
+            if (fen)
+                return zhong;
+
+            boolean direction = direction(nums, zhong);
+            if (direction){
+                left=zhong+1;
+            }else {
+                right=zhong;
+            }
+        }
+    return right;
+    }
+
+    private int getIndex(int left,int right){
+        int i = (left+right)/2;
+        return i;
+    }
+
+    private boolean direction(int[] nums,int index){
+        if (index==0){
+            return nums[0]<nums[1];
+        }if (index==nums.length-1){
+            return nums[nums.length-1]<nums[nums.length-2];
+        }
+        return nums[index]<nums[index+1]&&nums[index]>nums[index-1];
+    }
+
+    private boolean fen(int[] nums,int index){
+        if (index==0){
+            return nums[0]>nums[1];
+        }if (index==nums.length-1){
+            return nums[nums.length-1]<nums[nums.length-2];
+        }
+        return nums[index]>nums[index+1]&&nums[index]>nums[index-1];
+    }
+
+
+    /**
+     * 11. 盛最多水的容器
+     * @param height
+     * @return
+     */
+    public int maxArea(int[] height) {
+        //1.
+        int left=0; //左指针
+        int right=height.length-1;//右
+        int max=0;//最大值
+
+        while (left<right){
+            max=Math.max(max,area(height,left,right));
+
+            if (height[left]<height[right]){
+                left++;
+            }else {
+                right--;
+            }
+        }
+        return max;
+    }
+
+    private int area(int []height, int left ,int right){
+        int chang=right-left;
+        int kuan=Math.min(height[left],height[right]);
+        return chang*kuan;
+    }
+
+
+    /**[1,2,3,4]
+     * 1,2,3,4
+     * 1,2,4,3
+     * 1,3,2,4
+     * 1,3,4,2
+     * 1,4,3,2
+     * 1,4,2,3
+     * 46. 全排列
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> permute(int[] nums) {
+        for (int i = 0; i < nums.length; i++) {
+            System.out.print(nums[i]);
+            System.out.print('\t');
+            for (int j = 1; j < nums.length; j++) {
+                System.out.print(nums[(i+j)%nums.length]);
+                System.out.print('\t');
+            }
+            System.out.println();
+        }
+        return null;
+    }
+
+    private static void permute(int[] nums,int length, int startIndex,int skipIndex){
+        if (length==1)
+            if (startIndex<nums.length){
+                System.out.print(nums[startIndex%nums.length]);
+            }else {
+                System.out.print(nums[(skipIndex+startIndex)%nums.length]);
+            }
+
+        else
+            for (int i = 0; i < length; i++) {
+                System.out.print(nums[(i+startIndex)%nums.length]);
+                int chlidIndex=(i+startIndex+1);
+                permute(nums,length-1,chlidIndex,chlidIndex<=nums.length?0:nums.length-length);
+                System.out.println();
+            }
+    }
+
+
+
+
+
+
+
+
+
+    public static void main(String[] args) {
+        int[] arr=new int[]{1,2,3};
+        new Day02().permute(arr,arr.length,0,0);
+
     }
 
 }

@@ -589,30 +589,28 @@ public class Day03 {
     }
 
     /**
-     * 724. 寻找数组的中心索引
+     * 724. 寻找数组的中心下标
      * @param nums
      * @return
      */
     public int pivotIndex(int[] nums) {
-        if (nums==null)
-            return -1;
+        int sum = sum(nums);
+        int now=0;
         for (int i = 0; i < nums.length; i++) {
-            if (pivotIndex(nums,i))
+            sum-=nums[i];
+            if (sum==now)
                 return i;
+            now+=nums[i];
         }
         return -1;
     }
 
-    private boolean pivotIndex(int[] nums,int index){
-        int l=0;
-        int r=0;
-        for (int i = 0; i < index; i++) {
-            l+=nums[i];
+    private int sum(int[] nums){
+        int sum=0;
+        for (int i : nums) {
+            sum+=i;
         }
-        for (int i = index+1; i<nums.length; i++) {
-            r+=nums[i];
-        }
-        return l==r;
+        return sum;
     }
 
     /**
